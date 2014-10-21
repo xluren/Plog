@@ -38,7 +38,6 @@ class tail_log(object):
                 if not line:
                     log_inode_new=os.stat(self.log_file).st_ino 
                     if log_inode_new!=self.log_inode:
-                        print time.ctime()
                         self.exit_code=1
                         break
                     else:
