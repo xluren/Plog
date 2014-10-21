@@ -22,7 +22,10 @@ log_parse=parse_log(regex=regex,
                     dict_key=dict_key,
                     yield_line=yield_line)
 
-for status,output in log_parse.deal_log():
-    if status == 0:
-        print transform_datetime(output["date_time"],datetime_format)
+
+while 1:
+    for status,output in log_parse.deal_log():
+        print status,output
+        if status == 0:
+            print transform_datetime(output["date_time"],datetime_format)
 

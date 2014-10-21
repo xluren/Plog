@@ -14,5 +14,7 @@ class parse_log(object):
                 match=self.pattern.match(line)
                 if match:
                     yield 0,dict(zip(self.dict_key,match.groups()))
+                else :
+                    yield 1,"empty"
             except:
                     yield 1,"faild"

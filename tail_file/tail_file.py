@@ -1,5 +1,6 @@
 import os 
 import time 
+import fcntl
 class tail_log(object):
     """
         readme
@@ -13,6 +14,12 @@ class tail_log(object):
     def set_log_inode(self):
         self.log_inode=os.stat(self.log_file).st_ino
         
+    def non_block_read(self,file_handle):
+        fd = file_handle.fileno()
+        fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+        fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+        return file_handle
+
     def yield_line(self):
         with open(self.log_file,'r') as f:
             """
@@ -21,6 +28,7 @@ class tail_log(object):
                 2.set inode 
                 3.reset exit_code 
             """
+            f=self.non_block_read(f)
             f.seek(0,2)
             self.set_log_inode()
             self.exit_code=0
@@ -33,7 +41,9 @@ class tail_log(object):
                         print time.ctime()
                         self.exit_code=1
                         break
-                    time.sleep(0.1)
+                    else:
+                        time.sleep(1)
+                        yield "empty"
                     continue
                 yield line
 
@@ -44,6 +54,6 @@ class tail_log(object):
                     time.sleep(0.1)
                     break
                 yield line
-#log_tail=tail_log(log_file='/home/xluren/project/python/cacheL2/test/output',interval=0)
+#log_tail=tail_log(log_file='/home/xluren/project/python/github/Plog/test/output')
 #for i in log_tail.read_log():
 #    print i
