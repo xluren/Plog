@@ -21,23 +21,23 @@ def yield_output_inteval(inteval,line_iter,output):
                 if  dealing_time < log_time < dealing_time+inteval+1:
                     output_dict[dealing_time].append(output)
                 else:
-                    print "#"*5
-                    print "output_dict keys is :",output_dict.keys()
-                    print dealing_time,output_dict[dealing_time]
+                    #print "#"*5
+                    #print "output_dict keys is :",output_dict.keys()
+                    yield dealing_time,output_dict[dealing_time]
                     del output_dict[dealing_time]
                     dealing_time=time.time()-time.time()%inteval
                     output_dict[dealing_time]=[]
-                    print "#"*5
+                    #print "#"*5
             else:
                 now_time=time.time()
                 if now_time > dealing_time+inteval+1:
-                    print "#"*5
-                    print "output_dict keys is :",output_dict.keys()
-                    print dealing_time,output_dict
+                    #print "#"*5
+                    #print "output_dict keys is :",output_dict.keys()
+                    yield dealing_time,output_dict
                     del output_dict[dealing_time]
                     dealing_time=time.time()-time.time()%inteval
                     output_dict[dealing_time]=[]
-                    print "#"*5
+                    #print "#"*5
 
 '''
     paese config log
@@ -68,4 +68,11 @@ yield_line=log_tail.read_log()
 log_parse=parse_log(regex=regex,dict_key=dict_key,yield_line=yield_line)
 
 '''put out the result''' 
-yield_output_inteval(inteval=inteval,line_iter=log_parse.deal_log(),output="./tmp/hello")
+dict_iter=yield_output_inteval(inteval=inteval,line_iter=log_parse.deal_log(),output="./tmp/hello")
+from plugin_module import apache_mod 
+apache_mod.calculte_iterm(dict_iter,"hello")
+'''for key,value in dict_iter:
+    print "##########"*10
+    print key,value
+    print "##########"*10
+'''
