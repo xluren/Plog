@@ -25,3 +25,48 @@ To do list:
 3. Default configuration for apache and nginx.
 
 4. Compitablity of third party plugins, let programmers customize their own modules.
+
+about the demo:
+
+demo  simulate a real station that  
+
+1. read log
+
+2. parse log 
+
+3. calculate log  
+
+4. write  to file 
+
+5. zabbix sender from the file i wrote 
+
+you can  use single process or multi process and coroutine ,
+
+with single process  you can run as following 
+```
+(pythonenv)[xluren@test Plog]$ python demo.py 
+calculte iterm.......
+1414136460.0 {1414136519.9999979: []}
+write result to file......
+i got you message ,i know u  have wrote result to  file
+i will  send with zabbix_send plugin_module
+zabbix send begin .......
+zabbix_send end......
+^CError in atexit._run_exitfuncs:
+Traceback (most recent call last):
+```
+
+with multi process ,run as following:
+```
+(pythonenv)[xluren@test Plog]$ python demo.py multi
+calculte iterm.......
+1414136460.0 {1414136519.9999979: []}
+write result to file......
+i got you message ,i know u  have wrote result to  file
+i will  send with zabbix_send plugin_module
+zabbix send begin .......
+zabbix_send end......
+^CError in atexit._run_exitfuncs:
+```
+the demo just to test  my idea,i need to  make it more perfect :-)
+

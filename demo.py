@@ -39,7 +39,11 @@ import multiprocessing
 def receive():
     while 1:
         n=(yield)
-        print "in receive we got",n
+        print  "i got you message ,i know u  have wrote result to  file"
+        print  "i will  send with zabbix_send plugin_module"
+        from plugin_module import zabbix_send
+        zabbix_send.zabbix_send("hello")
+        
 
 def produce(q,inteval):
     #get  a  parse_log object log_parse.deal_log() return iter 
@@ -52,9 +56,12 @@ def produce(q,inteval):
 
 def consume(q,inteval):
 
+    r=receive()
+    r.next()
     from plugin_module import apache_mod 
     key,value=q.get()
     apache_mod.calculte_iterm((key,value),"hello")
+    r.send(key)
 
 if __name__=="__main__":
     
