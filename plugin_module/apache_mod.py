@@ -1,3 +1,4 @@
-def calculte_iterm(dict_iter,output_file):
-    for  key,value in dict_iter:
-        print key,value
+def calculte_iterm(dict,output_file):
+    key ,value = dict
+    print key,value
+    print "hello world"
