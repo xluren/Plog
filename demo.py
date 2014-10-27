@@ -10,28 +10,36 @@ def transform_datetime(datetime_str,datetime_format):
     return time.mktime(unix_time)
 
 def yield_output_inteval(inteval,line_iter,output):
-    while 1:
-        dealing_time=time.time()-time.time()%inteval
-        output_dict={}
-        log_time=0
-        output_dict[dealing_time]=[]
-        for status,output in line_iter:
-            if status == 0:
-                log_time=transform_datetime(output["date_time"],datetime_format)
-                if  dealing_time < log_time < dealing_time+inteval+1:
-                    output_dict[dealing_time].append(output)
-                else:
-                    yield dealing_time,output_dict[dealing_time]
-                    del output_dict[dealing_time]
-                    dealing_time=time.time()-time.time()%inteval
-                    output_dict[dealing_time]=[]
-            else:
-                now_time=time.time()
-                if now_time > dealing_time+inteval+1:
-                    yield dealing_time,output_dict
-                    del output_dict[dealing_time]
-                    dealing_time=time.time()-time.time()%inteval
-                    output_dict[dealing_time]=[]
+    temp_time=time.time()
+    dealing_time=temp_time-temp_time%inteval
+    output_dict={}
+    log_time=0
+    output_dict[dealing_time]=[]
+    for status,output in line_iter:
+        if status == 0:
+            log_time=transform_datetime(output["date_time"],datetime_format)
+            if  dealing_time  <= log_time  <  dealing_time+inteval:
+                output_dict[dealing_time].append(output)
+            else :
+                output_list=output_dict[dealing_time]
+                yield dealing_time,output_list
+                del output_dict[dealing_time]
+                temp_time=time.time()
+                dealing_time=temp_time-temp_time%inteval
+                output_dict[dealing_time]=[]
+                output_dict[dealing_time].append(output)
+        else:
+            now_time=time.time()
+            if now_time >dealing_time+inteval+1:
+
+                output_list=output_dict[dealing_time]
+                yield dealing_time,output_list
+                del output_dict[dealing_time]
+                temp_time=time.time()
+                dealing_time=temp_time-temp_time%inteval
+                output_dict[dealing_time]=[]
+                output_dict[dealing_time].append(output)
+
 
 
 #with multiprocess and coroutine 
@@ -51,6 +59,7 @@ def produce(q,inteval):
 
     #put out the result
     dict_iter=yield_output_inteval(inteval=inteval,line_iter=log_parse.deal_log(),output="./tmp/hello")
+    i=0
     for key,value in  dict_iter:
         q.put((key,value))
 
@@ -91,9 +100,12 @@ if __name__=="__main__":
         log_parse=parse_log(regex=regex,dict_key=dict_key,yield_line=yield_line)
 
         #put out the result
+        
         dict_iter=yield_output_inteval(inteval=inteval,line_iter=log_parse.deal_log(),output="./tmp/hello")
         from plugin_module import apache_mod 
-        apache_mod.calculte_iterm(dict_iter,"hello")
+        for key ,value in dict_iter: 
+            print key,len(value)
+            apache_mod.calculte_iterm((key,value),"hello")
         #####################################################################################################
     
     if run_mode=="multi":
@@ -106,4 +118,5 @@ if __name__=="__main__":
         produceQ=multiprocessing.Process(target=produce,args=(q,inteval))
         produceQ.start()
 
-
+        consumeQ.join()
+        produceQ.join()
