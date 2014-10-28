@@ -38,7 +38,6 @@ def yield_output_inteval(inteval,line_iter,output):
                 temp_time=time.time()
                 dealing_time=temp_time-temp_time%inteval
                 output_dict[dealing_time]=[]
-                output_dict[dealing_time].append(output)
 
 
 
@@ -59,7 +58,6 @@ def produce(q,inteval):
 
     #put out the result
     dict_iter=yield_output_inteval(inteval=inteval,line_iter=log_parse.deal_log(),output="./tmp/hello")
-    i=0
     for key,value in  dict_iter:
         q.put((key,value))
 
@@ -67,10 +65,11 @@ def consume(q,inteval):
 
     r=receive()
     r.next()
-    from plugin_module import apache_mod 
-    key,value=q.get()
-    apache_mod.calculte_iterm((key,value),"hello")
-    r.send(key)
+    from plugin_module import apache_mod
+    while 1: 
+        key,value=q.get()
+        apache_mod.calculte_iterm((key,value),"hello")
+        r.send(key)
 
 if __name__=="__main__":
     
@@ -89,6 +88,7 @@ if __name__=="__main__":
     datetime_format=config_option_dict['datetime_format']
     inteval=float(config_option_dict['inteval'])
 
+
     #get a tail_log object and get  the line  iter which tail_log yield
     log_tail=tail_log(log_file=log_file)
     yield_line=log_tail.read_log()
@@ -104,7 +104,6 @@ if __name__=="__main__":
         dict_iter=yield_output_inteval(inteval=inteval,line_iter=log_parse.deal_log(),output="./tmp/hello")
         from plugin_module import apache_mod 
         for key ,value in dict_iter: 
-            print key,len(value)
             apache_mod.calculte_iterm((key,value),"hello")
         #####################################################################################################
     
