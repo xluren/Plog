@@ -1,33 +1,31 @@
 #!/usr/bin/python 
-import multiprocessing
+import threading
+from Queue import Queue 
 import time,datetime
 from Plog.read_conf import read_conf
 import logging
 import sys,os
+
 def make_daemon(home_dir,umask):
     try:
         pid = os.fork()
         if pid > 0:
-            # Exit first parent
+            logging.info("first exit from  parent")
             sys.exit(0)
     except OSError, e:
-        sys.stderr.write(
-            "fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+        logging.error("first fork  error")
         sys.exit(1)
-
-    # Decouple from parent environment
     os.chdir(home_dir)
     os.setsid()
     os.umask(umask)
-    # Do second fork
+
     try:
         pid = os.fork()
         if pid > 0:
-            # Exit from second parent
+            logging.info("second exit from  parent")
             sys.exit(0)
     except OSError, e:
-        sys.stderr.write(
-            "fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+        logging.error("second fork  error")
         sys.exit(1)
      
 def init_log_conf(log_config_option):
@@ -130,22 +128,21 @@ def consume_queue_timer(sink_module,sink_option_dict,dict_queue):
 
 def start_work(conf_file):
 
-    print os.getpid()
     make_daemon(home_dir=".",umask=022)
-    print os.getpid()
+
+
     option_dict=read_conf.get_option_dict(conf_file)
     log_config_option=option_dict["log_config"]
     init_log_conf(log_config_option=log_config_option)
 
-
     '''
         write pid into  pid file to 
     '''
-
     pid_file=option_dict["pid_config"]["pid_file"]
     try:
         pid_file_handle=file(pid_file,'r')
         pid=int(pid_file_handle.read().strip())
+        print pid
     except:
         logging.error("open pid file error")
         pid=None
@@ -171,22 +168,19 @@ def start_work(conf_file):
     sink_module=__import__("Plog.sink.%s" % sink_module_name,fromlist=["Plog.sink"])
 
     source_iter=source_module.yield_line(source_option_dict=option_dict["source"])
-    dict_queue=multiprocessing.JoinableQueue()
 
-    produce_queue=multiprocessing.Process(
+
+
+    dict_queue=Queue()
+
+    produce_queue=threading.Thread(
         target=channel_module.parse_str,
         args=(source_iter,option_dict["channel"],dict_queue)
         )
 
-    consume_queue=multiprocessing.Process(
+    consume_queue=threading.Thread(
         target=consume_queue_timer,
         args=(sink_module,option_dict["sink"],dict_queue))
 
     produce_queue.start()
     consume_queue.start()
-
-    try:
-        with open(pid_file,"w") as pid_file_handle:
-            logging.info("clear plog.pid file")
-    except:
-        pass 
