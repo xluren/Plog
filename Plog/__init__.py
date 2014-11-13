@@ -4,7 +4,32 @@ import time,datetime
 from Plog.read_conf import read_conf
 import logging
 import sys,os
+def make_daemon(home_dir,umask):
+    try:
+        pid = os.fork()
+        if pid > 0:
+            # Exit first parent
+            sys.exit(0)
+    except OSError, e:
+        sys.stderr.write(
+            "fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+        sys.exit(1)
 
+    # Decouple from parent environment
+    os.chdir(home_dir)
+    os.setsid()
+    os.umask(umask)
+    # Do second fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+            # Exit from second parent
+            sys.exit(0)
+    except OSError, e:
+        sys.stderr.write(
+            "fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+        sys.exit(1)
+     
 def init_log_conf(log_config_option):
     logging_format=log_config_option["logging_format"]
     logging_level=log_config_option["logging_level"]
@@ -105,6 +130,9 @@ def consume_queue_timer(sink_module,sink_option_dict,dict_queue):
 
 def start_work(conf_file):
 
+    print os.getpid()
+    make_daemon(home_dir=".",umask=022)
+    print os.getpid()
     option_dict=read_conf.get_option_dict(conf_file)
     log_config_option=option_dict["log_config"]
     init_log_conf(log_config_option=log_config_option)
@@ -156,8 +184,6 @@ def start_work(conf_file):
 
     produce_queue.start()
     consume_queue.start()
-    produce_queue.join()
-    consume_queue.join()
 
     try:
         with open(pid_file,"w") as pid_file_handle:

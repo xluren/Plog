@@ -3,6 +3,7 @@ from optparse import OptionParser
 import os,sys
 import signal
 
+
 def signal_handler(sig, frame):
     a=os.getpid()
     print "kill ",a
@@ -22,5 +23,6 @@ if __name__ == "__main__":
         sys.exit(1)
     else :
         config_file=options.config_filename
+
 
     start_work(config_file)
