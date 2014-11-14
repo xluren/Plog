@@ -10,7 +10,7 @@ def get_file_inode(file):
             logging.warning(file+" dosent exist")
             file_ino=0
     return file_ino
-def read_file(file):
+def read_file(file,source_sleep_interval):
     tmp=""
     flag=1
     file_inode=get_file_inode(file)
@@ -24,7 +24,7 @@ def read_file(file):
                     logging.warning("inode change")
                     yield 1,"inode change"
                 else:
-                    continue
+                    time.sleep(source_sleep_interval)
             else:
                 if not line.endswith("\n"):
                     tmp+=line
@@ -35,8 +35,9 @@ def read_file(file):
 
 def yield_line(source_option_dict):
     file=source_option_dict["source_path"]
+    source_sleep_interval=int(source_option_dict["source_sleep_interval"])
     while 1:
-        func=read_file(file)
+        func=read_file(file,source_sleep_interval)
         for status,line in  func:
             if status == 1:
                 time.sleep(0.1)

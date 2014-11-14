@@ -83,7 +83,7 @@ def sink_deal_coroutine(sink_module,sink_option_dict,dict_queue):
                 datetime_str=dict_item["date_time"],
                 datetime_format=datetime_format
             )
-            if dealing_time<=transformed_datetime<dealing_time+interval:
+            if transformed_datetime<dealing_time+interval:
                 del overread_list[0]
             elif transformed_datetime>=dealing_time+interval:
                 cur_dealing_time_list.append(dict_item)
@@ -98,7 +98,7 @@ def sink_deal_coroutine(sink_module,sink_option_dict,dict_queue):
                 datetime_str=dict_item["date_time"],
                 datetime_format=datetime_format
             )
-            if dealing_time<=transformed_datetime<dealing_time+interval:
+            if transformed_datetime<dealing_time+interval:
                 cur_dealing_time_list.append(dict_item)
             elif transformed_datetime>=dealing_time+interval:
                 overread_list.append(dict_item)
