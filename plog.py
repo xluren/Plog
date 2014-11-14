@@ -25,13 +25,14 @@ if __name__ == "__main__":
                             help="config file for parse log")
 
     (options, args) = parser.parse_args()
-
+    
+    
     if options.config_filename is None :
         print "config  file is none"
         sys.exit(1)
     else :
         try:
-            if not os.path.exists(config_file):
+            if not os.path.exists(options.config_filename):
                 print "there is not  config_file ,you should creat_cfg first,refer to https://github.com/xluren/Plog"
                 sys.exit(1)
             else:

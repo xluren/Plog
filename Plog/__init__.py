@@ -132,6 +132,7 @@ def start_work(conf_file):
 
 
     option_dict=read_conf.get_option_dict(conf_file)
+
     log_config_option=option_dict["log_config"]
     init_log_conf(log_config_option=log_config_option)
 
@@ -142,16 +143,22 @@ def start_work(conf_file):
     try:
         pid_file_handle=file(pid_file,'r')
         pid=int(pid_file_handle.read().strip())
-        print pid
     except:
         logging.error("open pid file error")
         pid=None
 
     if pid:
-        message = "pidfile %d already exists. Is it already running?\n"
-        logging.error(message % pid)
-        sys.stderr.write(message % pid)
-        sys.exit(1)
+        try:
+            pgid=os.getpgid(pid)
+        except OSError :
+            pid=os.getpid()
+            with open(pid_file,"w") as pid_file_handle:
+                pid_file_handle.write(str(pid))
+        else:
+            message = "pidfile %d already exists. Is it already running?\n"
+            logging.error(message % pid)
+            sys.stderr.write(message % pid)
+            sys.exit(1)
     else:
         pid=os.getpid()
         with open(pid_file,"w") as pid_file_handle:
