@@ -7,6 +7,7 @@ setup(
     author_email='xlurenn@gmail.com',
     license = "MIT",
     packages= find_packages(),
+    data_files=[('/etc/plog/',['plog.conf'])],
     url='https://github.com/xluren',
     scripts = ["plog.py"],
 )
