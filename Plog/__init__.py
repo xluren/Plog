@@ -128,16 +128,23 @@ def consume_queue_timer(sink_module,sink_option_dict,dict_queue):
 
 def start_work(conf_file):
 
-    make_daemon(home_dir=".",umask=022)
-
 
     option_dict=read_conf.get_option_dict(conf_file)
 
+    '''
+        daemon config
+    '''
+    if option_dict["pid_config"]["daemon"]=="yes":
+        make_daemon(home_dir=".",umask=022)
+
+    '''
+        log config
+    '''
     log_config_option=option_dict["log_config"]
     init_log_conf(log_config_option=log_config_option)
 
     '''
-        write pid into  pid file to 
+        write pid into  pid file to
     '''
     pid_file=option_dict["pid_config"]["pid_file"]
     try:
