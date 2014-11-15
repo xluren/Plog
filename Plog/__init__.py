@@ -105,6 +105,11 @@ def sink_deal_coroutine(sink_module,sink_option_dict,dict_queue):
             elif transformed_datetime<dealing_time:
                 pass  
         logging.info("cur_dealing_time_list length is %d " % len(cur_dealing_time_list))
+
+        sink_module.deal_sink(
+                dict_list=cur_dealing_time_list,
+                sink_option_dict=sink_option_dict)
+        
         del cur_dealing_time_list[:]
         #sink_module.deal_sink(dict_list)
 
