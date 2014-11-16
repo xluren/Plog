@@ -5,17 +5,13 @@ import signal
 
 
 def signal_handler(sig, frame):
-    a=os.getpid()
-    print "kill ",a
-    os.kill(a, signal.SIGQUIT)
+    print "#"*12
+    pid=os.getpid()
+    print "kill ",pid
+    os.kill(pid, signal.SIGQUIT)
 
 if __name__ == "__main__":
 
-
-    #creat_config()
-    #sys.exit(1)
-
-    cfg="/etc/plog/plog.conf"
 
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
