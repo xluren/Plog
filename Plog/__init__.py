@@ -130,3 +130,10 @@ def start_work(conf_file):
 
     produce_queue.start()
     consume_queue.start()
+    while 1:
+        if len(threading.enumerate())!=3:
+            logging.error("error killed")
+            pid=os.getpid()
+            signal.kill(pid,signal.SIGQUIT)
+        else:
+            time.sleep(120)
