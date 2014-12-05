@@ -75,33 +75,6 @@ def start_work(conf_file):
     log_config_option=option_dict["log_config"]
     init_log_conf(log_config_option=log_config_option)
 
-    '''
-        write pid into  pid file to
-    '''
-    pid_file=option_dict["pid_config"]["pid_file"]
-    try:
-        pid_file_handle=file(pid_file,'r')
-        pid=int(pid_file_handle.read().strip())
-    except:
-        logging.error("open pid file error")
-        pid=None
-
-    if pid:
-        try:
-            pgid=os.getpgid(pid)
-        except OSError :
-            pid=os.getpid()
-            with open(pid_file,"w") as pid_file_handle:
-                pid_file_handle.write(str(pid))
-        else:
-            message = "pidfile %d already exists. Is it already running?\n"
-            logging.error(message % pid)
-            sys.stderr.write(message % pid)
-            sys.exit(1)
-    else:
-        pid=os.getpid()
-        with open(pid_file,"w") as pid_file_handle:
-            pid_file_handle.write(str(pid))
 
     source_module_name=option_dict["source"]["source_module"]
     source_module=__import__("Plog.source.%s" % source_module_name,fromlist=["Plog.source"])
@@ -130,6 +103,7 @@ def start_work(conf_file):
 
     produce_queue.start()
     consume_queue.start()
+
     while 1:
         if len(threading.enumerate())!=3:
             logging.error("error killed")

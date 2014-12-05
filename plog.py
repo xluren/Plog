@@ -5,9 +5,7 @@ import signal
 
 
 def signal_handler(sig, frame):
-    print "#"*12
     pid=os.getpid()
-    print "kill ",pid
     os.kill(pid, signal.SIGQUIT)
 
 if __name__ == "__main__":
