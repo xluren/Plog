@@ -5,6 +5,33 @@ import time,datetime
 from Plog.read_conf import read_conf
 import logging
 import sys,os
+import smtplib
+from email.mime.text import MIMEText
+
+def send_mail(mail_config_option,mail_content):
+    
+    mail_user=mail_config_option["mail_user"]
+    mail_postfix=mail_config_option["mail_postfix"]
+    mail_subject=mail_config_option["mail_subject"]
+    mail_host=mail_config_option["mail_host"]
+    mail_pass=mail_config_option["mail_pass"]
+    mailto_list=mail_config_option["mailto_list"]
+
+    mail_from = mail_user + "<"+mail_user+"@"+mail_postfix+">"
+    try:
+        msg = MIMEText(mail_content,_charset="utf-8")
+        msg['Subject'] = mail_subject
+        msg['From'] = mail_from
+        msg['To'] = mailto_list
+        send_smtp = smtplib.SMTP()
+        send_smtp.connect(mail_host)
+        send_smtp.login(mail_user, mail_pass)
+        send_smtp.sendmail(mail_from, mailto_list,msg.as_string())
+        send_smtp.close()
+        return True
+    except Exception, e:
+        print str(e)
+        return False
 
 def make_daemon(home_dir,umask):
     try:
@@ -75,6 +102,7 @@ def start_work(conf_file):
     log_config_option=option_dict["log_config"]
     init_log_conf(log_config_option=log_config_option)
 
+    mail_config_option=option_dict["mail_config"]
 
     source_module_name=option_dict["source"]["source_module"]
     source_module=__import__("Plog.source.%s" % source_module_name,fromlist=["Plog.source"])
@@ -108,6 +136,7 @@ def start_work(conf_file):
         if len(threading.enumerate())!=3:
             logging.error("error killed")
             pid=os.getpid()
+            send_mail(mail_config_option,"sth error,chech the log file to find out the reasone") 
             os.kill(pid,signal.SIGQUIT)
         else:
             time.sleep(120)
