@@ -108,6 +108,6 @@ def start_work(conf_file):
         if len(threading.enumerate())!=3:
             logging.error("error killed")
             pid=os.getpid()
-            signal.kill(pid,signal.SIGQUIT)
+            os.kill(pid,signal.SIGQUIT)
         else:
             time.sleep(120)
