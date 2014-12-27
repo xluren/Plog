@@ -5,7 +5,7 @@ import time,datetime
 from Plog.read_conf import read_conf
 import logging
 import sys,os
-import smtplib
+import smtplib,signal
 from email.mime.text import MIMEText
 
 def send_mail(mail_config_option,mail_content):
@@ -116,10 +116,8 @@ def start_work(conf_file):
 
     source_iter=source_module.yield_line(source_option_dict=option_dict["source"])
 
-
-
     dict_queue=Queue()
-
+    thread_dict={}
     produce_queue=threading.Thread(
         target=channel_module.parse_str,
         args=(source_iter,option_dict["channel"],dict_queue)
@@ -129,14 +127,34 @@ def start_work(conf_file):
         target=consume_queue_timer,
         args=(sink_module,option_dict["sink"],dict_queue))
 
+    thread_dict["produce_queue"]=produce_queue
+    thread_dict["consume_queue"]=consume_queue
+
     produce_queue.start()
     consume_queue.start()
 
+    retry_time=10
+
     while 1:
         if len(threading.enumerate())!=3:
-            logging.error("error killed")
-            pid=os.getpid()
-            send_mail(mail_config_option,"sth error,chech the log file to find out the reasone") 
-            os.kill(pid,signal.SIGQUIT)
+            retry_time-=1
+            if retry_time == 0:
+                pid=os.getpid()
+                os.kill(pid,signal.SIGQUIT)
+                send_mail(mail_config_option,"sth error,more than 10 times, so we kill it ")
+            send_mail(mail_config_option,"sth error,check the log file to find out the reasone")
+            if thread_dict["produce_queue"].isAlive()!=1:
+                produce_queue=threading.Thread(
+                    target=channel_module.parse_str,
+                    args=(source_iter,option_dict["channel"],dict_queue)
+                    )
+                thread_dict["produce_queue"]=produce_queue
+                produce_queue.start()
+            if thread_dict["consume_queue"].isAlive()!=1:
+                consume_queue=threading.Thread(
+                    target=consume_queue_timer,
+                    args=(sink_module,option_dict["sink"],dict_queue))
+                thread_dict["consume_queue"]=consume_queue 
+                consume_queue.start()
         else:
             time.sleep(120)
