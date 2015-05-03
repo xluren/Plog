@@ -51,14 +51,14 @@ logging_filename=/tmp/plog.Log
 ```
 source_module=self-define-script-name
 ```
-自定义source的具体实现，参看source module下的**plog/source/youself_define_source.py **
+自定义source的具体实现，参看source module下的**plog/source/youself_define_source.py**
 
 ####channel部分
 在这个部分,主要是对数据流的处理，你同样需要写一个 Python的脚本，名字随意你定，但是你需要写到 **plog.conf** 中，类似下方:
 ```
 channel_module=filter_log
 ```
-同样的你需要实现的channel可以参见 **plog/channel/youself_define_channel.py **
+同样的你需要实现的channel可以参见 **plog/channel/youself_define_channel.py**
 
 
 ####sink 部分

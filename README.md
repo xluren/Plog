@@ -3,7 +3,7 @@ Plog
 
 Plog is short for "Parse Log", it's a log-handle framework  designed for handling and analyzing log file generated from Apache, nginx etc.
 
-Inspired by [FlumeNG](http://flume.apache.org/), I divied the project into four parts:**source**,**channel** ,**sink **and **common**. and I have complete the core the project  like the deal-interval-control,the thread-control ,also have completed some simple functions of source,channel and sink.
+Inspired by [FlumeNG](http://flume.apache.org/), I divied the project into four parts:**source**,**channel** ,**sink** and **common**. and I have complete the core the project  like the deal-interval-control,the thread-control ,also have completed some simple functions of source,channel and sink.
 
 The following is a demo  configuration file.
 
@@ -63,7 +63,7 @@ In this part,you also need to complete a python script,and its name also depends
 ```
 sink_module=cacheL2get_monitor
 ```
-you can read  **plog/sink/youself_define_sink.py ** to get to know what you should complete
+you can read  **plog/sink/youself_define_sink.py** to get to know what you should complete
 
 
 ####How  To Run A Demo
