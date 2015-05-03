@@ -3,7 +3,7 @@ Plog
 
 Plog 是 "Parse Log" 的缩写,是一套处理日志流的框架，日志流格式可以是Apache，nginx等常规意义的日志格式，也可以是自定义格式
 
-受[FlumeNG](http://flume.apache.org/)的启发，我把整个工程分成了三个部分:**source**,**channel** ,**sink **,我已经完成了主体的共有的可以抽象出来的功能，比如线程的同步互斥，消息的生产消费，处理时间间隔的控制，还有一些简单的source,channel and sink函数
+受[FlumeNG](http://flume.apache.org/)的启发，我把整个工程分成了三个部分:**source**,**channel** ,**sink**,我已经完成了主体的共有的可以抽象出来的功能，比如线程的同步互斥，消息的生产消费，处理时间间隔的控制，还有一些简单的source,channel and sink函数
 
 
 下面是一个简单的配置文件:
@@ -87,5 +87,6 @@ test.145 cacheL2_200 57.000000
 -----
 
 个人的感慨，哎，说多了都是泪
+
 In  China,we name Nov 11  as "Single Day",but in the day of  Nov 11 2014,I fix the bug of plog and also restruct it . So today  I am very happy,event more than that  I have a girlfriend :-)
 
