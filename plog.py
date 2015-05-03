@@ -1,8 +1,7 @@
-from Plog import start_work
+from plog import run
 from optparse import OptionParser
 import os,sys
 import signal
-
 
 def signal_handler(sig, frame):
     pid=os.getpid()
@@ -15,7 +14,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
 
     parser = OptionParser() 
-    parser.add_option("-f", "--file", dest="config_filename",
+    parser.add_option("-c", "--config", dest="config_filename",
                             help="config file for parse log")
 
     (options, args) = parser.parse_args()
@@ -35,4 +34,4 @@ if __name__ == "__main__":
             print "read config error,check it exists or not,refer to https://github.com/xluren/Plog"
             sys.exit(1)
 
-    start_work(config_file)
+    run(config_file=config_file,debug=True)
