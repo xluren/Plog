@@ -69,9 +69,9 @@ you can read  **plog/sink/youself_define_sink.py** to get to know what you shoul
 ####How  To Run A Demo
 1.git clone https://github.com/xluren/Plog
 
-2.cd ./Plog/demo && nohup sh gen_log.sh & 
+2.cd ./Plog/test && nohup sh gen_log.sh & 
 
-3.cd .. && python plog.py -f plog.conf
+3.cd .. && python plog.py -c plog.conf
 
 4.you will see a file**/tmp/zabbix_send_info_cacheL2**,its contents like followings:
 ```
