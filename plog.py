@@ -34,4 +34,4 @@ if __name__ == "__main__":
             print "read config error,check it exists or not,refer to https://github.com/xluren/Plog"
             sys.exit(1)
 
-    run(config_file=config_file,debug=True)
+    run(config_file=config_file,debug=False)

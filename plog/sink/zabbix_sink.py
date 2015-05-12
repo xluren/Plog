@@ -55,6 +55,7 @@ class sink(sink_base):
         with open(self.zabbix_send_file,"w") as file_handle:
             for key in  self.send_dict:
                 info="%s %s_%s %f\n" % (hostname,self.service,str(key),self.send_dict[key])
+                print info
                 file_handle.write(info)
                 self.send_dict[key]=0
 

@@ -89,6 +89,7 @@ def run(config_file,debug=False):
     sink_module_name=conf_dict["sink"]["sink_module"]
     sink_module=__import__("plog.sink.%s" % sink_module_name,fromlist=["plog.sink"])
     sink_module=__import__("plog.sink.%s" % sink_module_name,fromlist=["plog.sink"])
+
     sink_controller=sink_module.sink(sink_dict=conf_dict["sink"])
 
 
