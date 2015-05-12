@@ -74,9 +74,13 @@ sink_module=cacheL2get_monitor
 
 2.cd ./Plog/test && nohup sh gen_log.sh & 
 
-3.cd .. && python plog.py -c plog.conf
+3.cd ./Plog/test 
 
-4.you will see a file**/tmp/zabbix_send_info_cacheL2**,its contents like followings:
+4.nohup sh gen_log.sh & 
+
+5.cd .. && python plog.py -c plog.conf
+
+6.you will see a file**/tmp/zabbix_send_info_cacheL2**,its contents like followings:
 ```
 [xluren@test Plog]$ cat /tmp/zabbix_send_info_cacheL2 
 test.145 cacheL2_200 57.000000
