@@ -69,15 +69,13 @@ you can read  **plog/sink/youself_define_sink.py** to get to know what you shoul
 ####How  To Run A Demo
 1.git clone https://github.com/xluren/Plog
 
-2.cd ./Plog/test && nohup sh gen_log.sh & 
+2.cd ./Plog/test 
 
-3.cd ./Plog/test 
+3.nohup sh gen_log.sh & 
 
-4.nohup sh gen_log.sh & 
+4.cd .. && python plog.py -c plog.conf
 
-5.cd .. && python plog.py -c plog.conf
-
-6.you will see a file**/tmp/zabbix_send_info_cacheL2**,its contents like followings:
+5.you will see a file**/tmp/zabbix_send_info_cacheL2**,its contents like followings:
 ```
 [xluren@test Plog]$ cat /tmp/zabbix_send_info_cacheL2 
 test.145 cacheL2_200 57.000000
