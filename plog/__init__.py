@@ -61,6 +61,8 @@ def consume_queue_timer(sink_controller,sink_dict,dict_queue):
             if dict_queue.qsize()>0:
                 dict_item=dict_queue.get()
                 sink_controller.calculate_item(item=dict_item)
+            else:
+                time.sleep(8)
 
 
 def run(config_file,debug=False):
