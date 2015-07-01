@@ -1,5 +1,4 @@
 from plog.common.base import read_conf
-from plog.common.base import read_conf
 import threading
 from Queue import Queue 
 import time,datetime
@@ -76,12 +75,10 @@ def run(config_file,debug=False):
 
     source_module_name=conf_dict["source"]["source_module"]
     source_module=__import__("plog.source.%s" % source_module_name,fromlist=["plog.source"])
-    source_module=__import__("plog.source.%s" % source_module_name,fromlist=["plog.source"])
     source_iter=source_module.source(source_dict=conf_dict["source"]).yield_line()
     
 
     channel_module_name=conf_dict["channel"]["channel_module"]
-    channel_module=__import__("plog.channel.%s" % channel_module_name,fromlist=["plog.channel"])
     channel_module=__import__("plog.channel.%s" % channel_module_name,fromlist=["plog.channel"])
     channel_controller=channel_module.channel(channel_dict=conf_dict["channel"],
                                         source_iter=source_iter,
@@ -89,7 +86,6 @@ def run(config_file,debug=False):
 
 
     sink_module_name=conf_dict["sink"]["sink_module"]
-    sink_module=__import__("plog.sink.%s" % sink_module_name,fromlist=["plog.sink"])
     sink_module=__import__("plog.sink.%s" % sink_module_name,fromlist=["plog.sink"])
 
     sink_controller=sink_module.sink(sink_dict=conf_dict["sink"])
