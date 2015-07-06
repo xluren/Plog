@@ -46,13 +46,13 @@ def consume_queue_timer(sink_controller,sink_dict,dict_queue):
     interval=int(sink_dict["interval"])
 
     current_time=time.time()
-    dealing_time=current_time-current_time%interval
+    dealing_time=current_time
 
     while 1:
         current_time=time.time()
         if current_time>dealing_time+interval:
 
-            dealing_time=current_time-current_time%interval
+            dealing_time+=interval
             sink_controller.deal_sink()
 
         else :
@@ -106,11 +106,9 @@ def run(config_file,debug=False):
     producer.start()
     consumer.start()
 
-    '''
     while 1:
         if len(threading.enumerate())!=3:
             pid=os.getpid()
             os.kill(pid,signal.SIGQUIT)
         else:
             time.sleep(120)
-    '''
